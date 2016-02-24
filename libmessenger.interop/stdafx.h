@@ -12,5 +12,8 @@
 #include <windows.h>
 #include <memory>
 
-#include "messenger/messenger.h"
+
 // TODO: Установите здесь ссылки на дополнительные заголовки, требующиеся для программы
+#include "libmessenger/messenger.h"
+#include "types.interop.h"
+#include "callback.interop.h"

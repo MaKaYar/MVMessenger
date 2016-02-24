@@ -4,20 +4,51 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MessengerClient"
+        xmlns:valueConverters="clr-namespace:MessengerClient.ViewModel.ValueConverters"
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="525" Loaded="Window_Loaded" x:Name="window">
-    <Grid>
-        <ListBox x:Name="UsersListBox" DisplayMemberPath="Identifier" ItemsSource="{Binding ElementName=window, Path=UsersList}" HorizontalAlignment="Left" Height="250" Margin="10,61,0,0" VerticalAlignment="Top" Width="136"/>
-        <ListView x:Name="listView" ItemsSource="{Binding ElementName=window, Path=Messages}" HorizontalAlignment="Left" Height="227" Margin="170,0,0,0" VerticalAlignment="Top" Width="339">
-            <ListView.View>
-                <GridView>
-                    <GridViewColumn/>
-                </GridView>
-            </ListView.View>
-        </ListView>
-        <TextBox x:Name="writeTextBox" HorizontalAlignment="Left" Height="41" Margin="170,270,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="267"/>
-        <Button x:Name="sendButton" Content="Send" HorizontalAlignment="Left" Margin="445,270,0,0" VerticalAlignment="Top" Width="64" Height="41" Click="sendButton_Click"/>
-        <TextBox x:Name="recepientTextBox" HorizontalAlignment="Left" Height="33" Margin="170,232,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="220"/>
+        Title="MainWindow" Height="350" Width="525" x:Name="window">
+    <Window.Resources>
+        <valueConverters:TextMessageConverter x:Key="TextMesageConverter"></valueConverters:TextMessageConverter>
+        <valueConverters:FromMeConverter x:Key="FromMeConverter"></valueConverters:FromMeConverter>
+    </Window.Resources>
+    <Grid HorizontalAlignment="Left" Margin="10,10,10,10"
+               DataContext="{Binding MainVM, Source={StaticResource Locator}}"
+               >
+
+        <ListBox 
+            DockPanel.Dock="Left"
+            x:Name="UsersListBox" ItemsSource="{Binding UsersList}" SelectedItem="{Binding SelectedUser}" DisplayMemberPath="Identifier"  Margin="0,0,0,0"  Width="150"/>
+        <ListBox Margin="155,0,-342,45"
+                 ItemsSource="{Binding SelectedUser.Talk}"
+                 HorizontalContentAlignment="Stretch">
+            <ListBox.Resources>
+
+            </ListBox.Resources>
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <TextBox IsReadOnly="True" Background="Aqua" Text="{Binding Path=getData, Converter={StaticResource TextMesageConverter}}"
+                               Margin="0,5"
+                             HorizontalAlignment="{Binding Path=FromMe, Converter={StaticResource FromMeConverter}}">
+                    </TextBox>
+
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+        <Button x:Name="SendButton" Content="Send"  HorizontalAlignment="Left" Margin="392,259,-342,0" VerticalAlignment="Top" Width="100" Height="40"
+                Command="{Binding SendMessageCommand}"/>
+        <TextBox x:Name="SendingMessageTextBox" HorizontalAlignment="Left" Height="40" Margin="155,259,-237,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="232"
+                 Text="{Binding CurrentText, UpdateSourceTrigger=LostFocus}"
+                 >
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="TextChanged">
+                    <i:InvokeCommandAction Command="{Binding SetTextTypeCommand}"/>
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
+        </TextBox>
 
     </Grid>
+
+
+
 </Window>

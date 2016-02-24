@@ -13,6 +13,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Заголовочные файлы\libmessenger">
+      <UniqueIdentifier>{d4a70861-ab24-4491-ba20-fd280f3ba6a5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -24,31 +27,48 @@
     <ClInclude Include="targetver.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
-    <ClInclude Include="messenger\callbacks.h">
+    <ClInclude Include="types.interop.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
-    <ClInclude Include="messenger\messenger.h">
+    <ClInclude Include="exports.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
-    <ClInclude Include="messenger\observers.h">
+    <ClInclude Include="callback.interop.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
-    <ClInclude Include="messenger\settings.h">
-      <Filter>Заголовочные файлы</Filter>
+    <ClInclude Include="libmessenger\callbacks.h">
+      <Filter>Заголовочные файлы\libmessenger</Filter>
     </ClInclude>
-    <ClInclude Include="messenger\types.h">
-      <Filter>Заголовочные файлы</Filter>
+    <ClInclude Include="libmessenger\messenger.h">
+      <Filter>Заголовочные файлы\libmessenger</Filter>
+    </ClInclude>
+    <ClInclude Include="libmessenger\observers.h">
+      <Filter>Заголовочные файлы\libmessenger</Filter>
+    </ClInclude>
+    <ClInclude Include="libmessenger\settings.h">
+      <Filter>Заголовочные файлы\libmessenger</Filter>
+    </ClInclude>
+    <ClInclude Include="libmessenger\types.h">
+      <Filter>Заголовочные файлы\libmessenger</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
       <Filter>Файлы исходного кода</Filter>
     </ClCompile>
-    <ClCompile Include="libmessenger.interop.cpp">
-      <Filter>Файлы исходного кода</Filter>
-    </ClCompile>
     <ClCompile Include="dllmain.cpp">
       <Filter>Файлы исходного кода</Filter>
     </ClCompile>
+    <ClCompile Include="exports.cpp">
+      <Filter>Файлы исходного кода</Filter>
+    </ClCompile>
+    <ClCompile Include="callback.interop.cpp">
+      <Filter>Файлы исходного кода</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="libmessenger.interop.rc">
+      <Filter>Файлы ресурсов</Filter>
+    </ResourceCompile>
   </ItemGroup>
 </Project>

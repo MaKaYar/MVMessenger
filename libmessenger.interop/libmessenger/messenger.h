@@ -1,6 +1,5 @@
 #ifndef MESSENGER_H
 #define MESSENGER_H
-
 #include <memory>
 
 #include "types.h"
