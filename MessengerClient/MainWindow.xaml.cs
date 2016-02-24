@@ -30,6 +30,8 @@ namespace MessengerClient
 
         public MainWindow()
         {
+            LoginWindow loginWindow = new LoginWindow();
+            loginWindow.ShowDialog();
             InitializeComponent();
         }
 
@@ -155,6 +157,11 @@ namespace MessengerClient
         private void button_Click(object sender, RoutedEventArgs e)
         {
 
+        }
+
+        private void window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            MessengerInterop.Disconnect();
         }
     }
 }

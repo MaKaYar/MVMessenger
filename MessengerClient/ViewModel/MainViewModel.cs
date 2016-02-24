@@ -174,12 +174,17 @@ namespace MessengerClient.ViewModel
                 );
             RaisePropertyChanged(() => SelectedUser);
         }
+
+        bool canExecuteSendCommand()
+        {
+            return !String.IsNullOrWhiteSpace(CurrentText) && SelectedUser != null;
+        }
         /// <summary>
         /// Initializes a new instance of the MainViewModel class.
         /// </summary>
         public MainViewModel()
         {
-            SendMessageCommand = new RelayCommand(SendMessageMethod);
+            SendMessageCommand = new RelayCommand(SendMessageMethod, canExecuteSendCommand);
             SetTextTypeCommand = new RelayCommand(SetTextTypeMethod);
             StartTimerCommand = new RelayCommand(TimerStartMethod);
             ////if (IsInDesignMode)

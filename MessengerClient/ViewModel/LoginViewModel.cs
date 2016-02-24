@@ -42,7 +42,10 @@ namespace MessengerClient.ViewModel
             set { Set<bool>(() => this.IsBusy, ref _isBusy, value); }
         }
 
-        private async void LoginMethod()
+        public bool? LoginResult { get; private set; }
+
+
+        private async void LoginMethod(Window loginWindow)
         {
             IsBusy = true;
             MessengerManager.Init(Address, Port);
@@ -51,12 +54,11 @@ namespace MessengerClient.ViewModel
             {
                 case OperationResult.Ok:
                     {
-                        Executers.ExecuteInUiThread(() =>
-                        {
-                            MainWindow mainWindow = new MainWindow();
-                            mainWindow.Show();
-                            //TODO Closing LoginWindow
-                        });
+
+                        loginWindow.DialogResult = true;
+                        //MainWindow mainWindow = new MainWindow();
+                        //mainWindow.Show();
+                        //TODO Closing LoginWindow
                         break;
                     }
                 default:
@@ -73,7 +75,8 @@ namespace MessengerClient.ViewModel
 
         public LoginViewModel()
         {
-            LoginCommand = new RelayCommand(LoginMethod);
+            LoginResult = null;
+            LoginCommand = new RelayCommand<Window>(LoginMethod);
             SetDefaultConnection();
         }
 
