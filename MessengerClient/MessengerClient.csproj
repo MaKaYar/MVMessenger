@@ -94,6 +94,11 @@
     <Compile Include="Interop\Helpers\DataTimeConversion.cs" />
     <Compile Include="Interop\MessengerManager.cs" />
     <Compile Include="Interop\Types.cs" />
+    <Compile Include="LoginWindow.xaml.cs">
+      <DependentUpon>LoginWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewModel\Executers.cs" />
+    <Compile Include="ViewModel\LoginViewModel.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
     <Compile Include="ViewModel\Message.cs" />
     <Compile Include="ViewModel\MessagesHistory.cs" />
@@ -101,6 +106,10 @@
     <Compile Include="ViewModel\ValueConverters\FromMeConverter.cs" />
     <Compile Include="ViewModel\ValueConverters\TextMessageConverter.cs" />
     <Compile Include="ViewModel\ViewModelLocator.cs" />
+    <Page Include="LoginWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

@@ -27,6 +27,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Markup;
 using System.Windows.Threading;
 using MessengerClient.Interop.Helpers;
 
@@ -38,6 +39,8 @@ namespace MessengerClient.ViewModel
     /// </summary>
     public class ViewModelLocator
     {
+
+
         /// <summary>
         /// Initializes a new instance of the ViewModelLocator class.
         /// </summary>
@@ -52,22 +55,18 @@ namespace MessengerClient.ViewModel
             else
             {
                 // Create run time view services and models
+                //MessengerManager.Init("127.0.0.1", 5222);
+                //MessengerManager.RegisterObservers(MessageRecievedHandler, MessageStatusChangedHandler);
+                //Login("makar2@gmail.com", "12345");
+                //MessageBox.Show(resultLogin.ToString());
                 SimpleIoc.Default.Register<MainViewModel>();
-                ConnectToMessangerManager();
+                SimpleIoc.Default.Register<LoginViewModel>();
+                
+
             }
         }
 
-        private void MessageRecievedHandler(string sender, Interop.Message message)
-        {
-            //var length = message.Content.Data.DataLength;
-            //var data = new byte[length];
-            //Marshal.Copy(message.Content.Data.Data, data, 0, length);
-            //var temp = Encoding.UTF8.GetString(data);
-            //NewMethod(temp);
-            MainVM.AddMessageToViewModel(sender, message, false);
-            
-            //Messages.Add(temp);
-        }
+        
 
         
 
@@ -87,54 +86,45 @@ namespace MessengerClient.ViewModel
         //    viewMessage.setData = BytesConversion.GetBytesFromBinaryData(message.Content.Data);
         //}
 
-        private void MessageStatusChangedHandler()
-        {
-
-        }
+        
 
         private OnMessageRecieved _mrh;
         private OnMessageStatusChanged _msh;
 
-        private async void ConnectToMessangerManager()
+        private async void Login(string user, string password)
         {
             //if ((bool)(DesignerProperties.IsInDesignModeProperty.GetMetadata(typeof(DependencyObject)).DefaultValue))
             //{
             //    return; //in Design mode
             //}
-            MessengerManager.Init(MessageRecievedHandler, MessageStatusChangedHandler);
-            var resultLogin = await MessengerManager.Login();
-            MessageBox.Show(resultLogin.ToString());
-            ObservableCollection<User> result = await GetActiveUsersList();
-            MainVM.UsersList = new ObservableCollection<User>(result);
+            //MessengerManager.Init(MessageRecievedHandler, MessageStatusChangedHandler, url, port);
+            //var resultLogin = await MessengerManager.Login();
+            //MessageBox.Show(resultLogin.ToString());
+            //ObservableCollection<User> result = await GetActiveUsersList();
+            //MainVM.UsersList = new ObservableCollection<User>(result);
             //var temp = new TextMessage();
             //temp.Data = "Hello";
             //var str = temp.Data;
             //MessageBox.Show((string)str);
-
+            var resultLogin = await MessengerManager.Login(user, password);
+            MessageBox.Show(resultLogin.ToString());
         }
 
-        public static async Task<ObservableCollection<User>> GetActiveUsersList()
-        {
-            var requestActiveUsersResult = await MessengerManager.RequestActiveUsers();
-            var activeUsersList = new ObservableCollection<User>();
-            foreach (var activeUser in requestActiveUsersResult.UserList.OrderBy(r => r.Identifier))
-            {
-                activeUsersList.Add(new User
-                {
-                    Identifier = activeUser.Identifier
-                });
-            }
 
-            //var temp = new ObservableCollection<User>(activeUsersList.OrderBy(r=>r.Identifier));
-            //return temp;\
-            return activeUsersList;
-        }
 
         public MainViewModel MainVM
         {
             get
             {
                 return ServiceLocator.Current.GetInstance<MainViewModel>();
+            }
+        }
+
+        public LoginViewModel LoginVM
+        {
+            get
+            {
+                return ServiceLocator.Current.GetInstance<LoginViewModel>();
             }
         }
 

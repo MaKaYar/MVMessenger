@@ -11,7 +11,7 @@ namespace MessengerClient.Interop
         public static extern void Login(IntPtr loginCallback, [MarshalAs(UnmanagedType.LPStr)]string login, [MarshalAs(UnmanagedType.LPStr)]string pass);
 
         [DllImport("libmessenger.interop.dll", CallingConvention = CallingConvention.Cdecl)]
-        public static extern void Init();
+        public static extern void Init(ushort port,[MarshalAs(UnmanagedType.LPStr)]string address);
 
         [DllImport("libmessenger.interop.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern void Disconnect();

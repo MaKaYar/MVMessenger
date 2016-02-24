@@ -3,8 +3,10 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Net.Mime;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Threading;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.CommandWpf;
 using MessengerClient.Interop;
@@ -26,8 +28,30 @@ namespace MessengerClient.ViewModel
     /// </summary>
     public class MainViewModel : ViewModelBase
     {
-        private ObservableCollection<User> _users;
+        private ObservableCollection<User> _users = new ObservableCollection<User>();
         private User _selectedUser;
+        private DispatcherTimer timer = null;
+
+        private void TimerStartMethod()
+        {
+            MessengerManager.RegisterObservers(MessageRecievedHandler, MessageStatusChangedHandler);
+            timer = new DispatcherTimer();
+            timer.Tick += new EventHandler(timerTick);
+            //timer.Interval = new TimeSpan(0, 0, 0, 0, 500);
+            timer.Interval = new TimeSpan(0, 0, 0, 0, 1000);
+            timer.Start();
+        }
+
+        private async void timerTick(object sender, EventArgs e)
+        {
+            ObservableCollection<User> result = await GetActiveUsersList();
+            foreach (var item in result)
+            {
+                if (UsersList.All(r => r.Identifier != item.Identifier))
+                    UsersList.Add(item);
+            }
+        }
+
         //Temporary decision
         private string _currentText;
         //
@@ -35,15 +59,18 @@ namespace MessengerClient.ViewModel
 
         private void SendMessageMethod()
         {
+            //BUG The first two characters in the first message are currupted
+            //TODO Fix bug: The first two characters in the first message are currupted
+            //TODO Add oportunity sending empty message
             Interop.Message temp;
             switch (CurrentContentType)
             {
                 case MessageContentType.Text:
-                {
-                    temp = MessengerManager.SendMessage(_selectedUser.Identifier, Encoding.UTF8.GetBytes(CurrentText),
-                        CurrentContentType);
-                    break;
-                }
+                    {
+                        temp = MessengerManager.SendMessage(_selectedUser.Identifier, Encoding.UTF8.GetBytes(CurrentText),
+                            CurrentContentType);
+                        break;
+                    }
                 default:
                     return;
             }
@@ -59,6 +86,7 @@ namespace MessengerClient.ViewModel
 
         public ICommand SendMessageCommand { get; private set; }
         public ICommand SetTextTypeCommand { get; private set; }
+        public ICommand StartTimerCommand { get; private set; }
 
         public ObservableCollection<User> UsersList
         {
@@ -103,14 +131,28 @@ namespace MessengerClient.ViewModel
                 RaisePropertyChanged(() => CurrentText);
             }
         }
+        private void MessageRecievedHandler(string sender, Interop.Message message)
+        {
+            //var length = message.Content.Data.DataLength;
+            //var data = new byte[length];
+            //Marshal.Copy(message.Content.Data.Data, data, 0, length);
+            //var temp = Encoding.UTF8.GetString(data);
+            //NewMethod(temp);
+            this.AddMessageToViewModel(sender, message, false);
 
+            //Messages.Add(temp);
+        }
+        private void MessageStatusChangedHandler()
+        {
+
+        }
         /// <summary>
         /// 
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="message"></param>
         /// <param name="fromMe">True - the message from me; False - the message from someone</param>
-        public void AddMessageToViewModel(string sender, Interop.Message message, bool fromMe)
+        private void AddMessageToViewModel(string sender, Interop.Message message, bool fromMe)
         {
             //BUG I get recived message before i get sent message
             //TODO Fix bug: I get recived message before i get sent message
@@ -139,6 +181,7 @@ namespace MessengerClient.ViewModel
         {
             SendMessageCommand = new RelayCommand(SendMessageMethod);
             SetTextTypeCommand = new RelayCommand(SetTextTypeMethod);
+            StartTimerCommand = new RelayCommand(TimerStartMethod);
             ////if (IsInDesignMode)
             ////{
             ////    // Code runs in Blend --> create design time data.
@@ -149,14 +192,30 @@ namespace MessengerClient.ViewModel
             ////}
         }
 
-        public string ObjectToString(object source)
+
+
+        public static async Task<ObservableCollection<User>> GetActiveUsersList()
         {
-            return (string)source;
+            var requestActiveUsersResult = await MessengerManager.RequestActiveUsers();
+            var activeUsersList = new ObservableCollection<User>();
+            foreach (var activeUser in requestActiveUsersResult.UserList.OrderBy(r => r.Identifier))
+            {
+                activeUsersList.Add(new User
+                {
+                    Identifier = activeUser.Identifier
+                });
+            }
+
+            //var temp = new ObservableCollection<User>(activeUsersList.OrderBy(r=>r.Identifier));
+            //return temp;\
+            return activeUsersList;
         }
 
-        public static ObservableCollection<User> GetActiveUsersList()
+        public override void Cleanup()
         {
-            return null;
+            MessengerManager.Disconnect();
+            //TODO Unregister Observers and Disconnect
+            base.Cleanup();
         }
     }
 }

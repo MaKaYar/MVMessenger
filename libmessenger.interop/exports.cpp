@@ -4,12 +4,13 @@
 #include "stdafx.h"
 #include "exports.h"
 
-void __declspec(dllexport) Init()
+void __declspec(dllexport) Init(unsigned short port, const char* url)
 {
 	messenger::MessengerSettings settings;
-	settings.serverPort = 5222;
+	//settings.serverPort = 5222;
+	settings.serverPort = port;
 	//settings.serverUrl = "137.116.213.109";
-	settings.serverUrl = "127.0.0.1";
+	settings.serverUrl = url;
 	g_messenger = messenger::GetMessengerInstance(settings);
 }
 

@@ -7,14 +7,18 @@
         xmlns:valueConverters="clr-namespace:MessengerClient.ViewModel.ValueConverters"
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="525" x:Name="window">
+        Title="MainWindow" Height="350" Width="525" x:Name="window"
+        DataContext="{Binding MainVM, Source={StaticResource Locator}}">
     <Window.Resources>
         <valueConverters:TextMessageConverter x:Key="TextMesageConverter"></valueConverters:TextMessageConverter>
         <valueConverters:FromMeConverter x:Key="FromMeConverter"></valueConverters:FromMeConverter>
     </Window.Resources>
-    <Grid HorizontalAlignment="Left" Margin="10,10,10,10"
-               DataContext="{Binding MainVM, Source={StaticResource Locator}}"
-               >
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Loaded">
+            <i:InvokeCommandAction Command="{Binding StartTimerCommand}"/>
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
+    <Grid HorizontalAlignment="Left" Margin="10,10,10,10">
 
         <ListBox 
             DockPanel.Dock="Left"

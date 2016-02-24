@@ -4,7 +4,7 @@
 
 extern "C" {
 
-	void __declspec(dllexport) Init();
+	void __declspec(dllexport) Init(unsigned short port, const char* url);
 
 	void __declspec(dllexport) Disconnect();
 

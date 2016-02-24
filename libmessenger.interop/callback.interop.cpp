@@ -7,7 +7,7 @@
 void CallbackProxy::OnOperationResult(messenger::operation_result::Type result)
 {
 	if (loginCallback != NULL) loginCallback(result);
-	//loginCallback = NULL;
+	loginCallback = NULL;
 }
 // ------------------------------------
 // RequestUsersCalbackProxy methods defenition
@@ -31,7 +31,7 @@ void RequestUsersCalbackProxy::OnOperationResult(messenger::operation_result::Ty
 		}
 		requestUsersCallback(UserList, users.size(), result);
 	}
-	//requestUsersCallback = NULL;
+	requestUsersCallback = NULL;
 }
 
 // ------------------------------------

@@ -21,31 +21,34 @@ namespace MessengerClient.Interop
 
         public static List<User> activeUsersList;
 
-        
 
-        public static async Task<OperationResult> Login()
+        public static void Init(string url, ushort port)
+        {
+            MessengerInterop.Init(port, url);
+        }
+
+        public static void Disconnect()
+        {
+            MessengerInterop.Disconnect();
+        }
+
+        public static async Task<OperationResult> Login(string login, string password)
         {
             var task = new TaskCompletionSource<OperationResult>();
             _logBack = new LoginCallback(task.SetResult);
             var loginCallbackPtr = Marshal.GetFunctionPointerForDelegate(
                 _logBack);
-            MessengerInterop.Login(loginCallbackPtr, "makar2@gmail.com", "12345");
+            MessengerInterop.Login(loginCallbackPtr, login, password);
             return await task.Task;
         }
 
-        public static void Init(OnMessageRecieved onMessageRecieved, OnMessageStatusChanged onMesStatusChanged)
+        public static void RegisterObservers(OnMessageRecieved onMessageRecieved, OnMessageStatusChanged onMesStatusChanged)
         {
-            MessengerInterop.Init();
             _onMesRecieved = onMessageRecieved;
             var mrhPtr = Marshal.GetFunctionPointerForDelegate(_onMesRecieved);
             _onMesStatusChanged = onMesStatusChanged;
             var mshPtr = Marshal.GetFunctionPointerForDelegate(_onMesStatusChanged);
             MessengerInterop.RegisterObserver(mrhPtr, mshPtr);
-        }
-
-        public static void RegisterObservers()
-        {
-            
         }
 
         //public static void MessageRecievedHandler(string sender, Message message)
